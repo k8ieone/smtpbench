@@ -16,6 +16,7 @@ import (
 
 type Args struct {
 	SMTPServer            string
+	EHLODomain            string
 	Username              string
 	Password              string
 	From                  string
@@ -53,6 +54,7 @@ func main() {
 func parseArgs() Args {
 	args := Args{}
 	flag.StringVar(&args.SMTPServer, "smtp-server", "", "SMTP server address")
+	flag.StringVar(&args.EHLODomain, "ehlodomain", "localhost", "Custom EHLO domain")
 	flag.StringVar(&args.Username, "username", "", "SMTP username")
 	flag.StringVar(&args.Password, "password", "", "SMTP password")
 	flag.StringVar(&args.From, "from", "", "Sender email address")
@@ -88,6 +90,7 @@ func parseArgs() Args {
 func createSMTPPool(args Args) (*smtppool.Pool, error) {
 	config := smtppool.Opt{
 		Host:        args.SMTPServer,
+		HelloHostname: args.EHLODomain,
 		Port:        args.Port,
 		MaxConns:    args.ConcurrentConnections,
 		IdleTimeout: time.Duration(args.TimeoutSeconds) * time.Second,
